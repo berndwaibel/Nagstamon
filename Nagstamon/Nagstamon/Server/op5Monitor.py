@@ -123,12 +123,6 @@ class Op5MonitorServer(GenericServer):
                          "input_checkbutton_use_display_name_host",
                          "input_checkbutton_use_display_name_service"]
 
-    # URLs for browser shortlinks/buttons on popup window
-    BROWSER_URLS = { "monitor": "$MONITOR$/monitor",\
-                    "hosts": "$MONITOR$/monitor/index.php/listview?q=%s" % '[hosts] all and state != 0'.replace(" ", "%20"),\
-                    "services": "$MONITOR$/monitor/index.php/listview?q=%s" % '[services] all and state != 0'.replace(" ", "%20"),\
-                    "history": "$MONITOR$/monitor/index.php/alert_history/generate"}
-
     def __init__(self, **kwds):
         GenericServer.__init__(self, **kwds)
 
@@ -136,6 +130,17 @@ class Op5MonitorServer(GenericServer):
         self.MENU_ACTIONS = ["Monitor", "Recheck", "Acknowledge", "Downtime"]
         self.STATUS_SVC_MAPPING = {'0':'OK', '1':'WARNING', '2':'CRITICAL', '3':'UNKNOWN'}
         self.STATUS_HOST_MAPPING = {'0':'UP', '1':'DOWN', '2':'UNREACHABLE'}
+
+
+    def init_config(self):
+        """
+        set URLs for CGI - they are static and there is no need to set them with every cycle
+        """
+        # URLs for browser shortlinks/buttons on popup window
+        self.browser_urls = { "monitor": "$MONITOR$/monitor",\
+                              "hosts": "$MONITOR$/monitor/index.php/listview?q=%s" % '[hosts] all and state != 0'.replace(" ", "%20"),\
+                              "services": "$MONITOR$/monitor/index.php/listview?q=%s" % '[services] all and state != 0'.replace(" ", "%20"),\
+                              "history": "$MONITOR$/monitor/index.php/alert_history/generate"}
 
 
     def _get_status(self):

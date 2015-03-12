@@ -86,12 +86,6 @@ class ThrukServer(GenericServer):
     # Arguments available for submitting check results
     SUBMIT_CHECK_RESULT_ARGS = ["check_output", "performance_data"]
 
-    # URLs for browser shortlinks/buttons on popup window
-    BROWSER_URLS = { "monitor": "$MONITOR$",\
-                    "hosts": "$MONITOR-CGI$/status.cgi?hostgroup=all&style=hostdetail&hoststatustypes=12&page=1&entries=all",\
-                    "services": "$MONITOR-CGI$/status.cgi?dfl_s0_value_sel=5&dfl_s0_servicestatustypes=29&dfl_s0_op=%3D&style=detail&dfl_s0_type=host&dfl_s0_serviceprops=0&dfl_s0_servicestatustype=4&dfl_s0_servicestatustype=8&dfl_s0_servicestatustype=16&dfl_s0_servicestatustype=1&hidetop=&dfl_s0_hoststatustypes=15&dfl_s0_val_pre=&hidesearch=2&dfl_s0_value=all&dfl_s0_hostprops=0&nav=&page=1&entries=all",\
-                    "history": "$MONITOR-CGI$/history.cgi?host=all&page=1&entries=all"}
-
     STATES_MAPPING = {"hosts" : {0 : "OK", 1 : "DOWN", 2 : "UNREACHABLE"},\
                       "services" : {0 : "OK", 1 : "WARNING",  2 : "CRITICAL", 3 : "UNKNOWN"}}
 
@@ -139,19 +133,24 @@ class ThrukServer(GenericServer):
         # create filters like described in
         # http://www.nagios-wiki.de/nagios/tips/host-_und_serviceproperties_fuer_status.cgi?s=servicestatustypes
         # Thruk allows requesting only needed information to reduce traffic
-        self.cgiurl_services = self.monitor_cgi_url + "/status.cgi?host=all&servicestatustypes=28&view_mode=json&"\
+        self.cgiurl_services = self.monitor_cgi_url + "/status.cgi?host=all&servicestatustypes=" + self.get_status_type_service() + "&view_mode=json&"\
                                                       "entries=all&columns=host_name,description,state,last_check,"\
                                                       "last_state_change,plugin_output,current_attempt,"\
                                                       "max_check_attempts,active_checks_enabled,is_flapping,"\
                                                       "notifications_enabled,acknowledged,state_type,"\
                                                       "scheduled_downtime_depth"
         # hosts (up or down or unreachable)
-        self.cgiurl_hosts = self.monitor_cgi_url + "/status.cgi?hostgroup=all&style=hostdetail&hoststatustypes=12&"\
+        self.cgiurl_hosts = self.monitor_cgi_url + "/status.cgi?hostgroup=all&style=hostdetail&hoststatustypes=" + self.get_status_type_host() + "&"\
                                                     "view_mode=json&entries=all&"\
                                                     "columns=name,state,last_check,last_state_change,"\
                                                     "plugin_output,current_attempt,max_check_attempts,"\
                                                     "active_checks_enabled,notifications_enabled,is_flapping,"\
                                                     "acknowledged,scheduled_downtime_depth,state_type"
+        # URLs for browser shortlinks/buttons on popup window
+        self.browser_urls = { "monitor": "$MONITOR$",\
+                              "hosts": "$MONITOR-CGI$/status.cgi?hostgroup=all&style=hostdetail&hoststatustypes=" + self.get_status_type_host() + "&page=1&entries=all",\
+                              "services": "$MONITOR-CGI$/status.cgi?dfl_s0_value_sel=5&dfl_s0_servicestatustypes=" + self.get_status_type_service() + "&dfl_s0_op=%3D&style=detail&dfl_s0_type=host&dfl_s0_serviceprops=0&dfl_s0_servicestatustype=4&dfl_s0_servicestatustype=8&dfl_s0_servicestatustype=16&dfl_s0_servicestatustype=1&hidetop=&dfl_s0_hoststatustypes=15&dfl_s0_val_pre=&hidesearch=2&dfl_s0_value=all&dfl_s0_hostprops=0&nav=&page=1&entries=all",\
+                              "history": "$MONITOR-CGI$/history.cgi?host=all&page=1&entries=all"}
 
         # test for cookies
         # put all necessary data into url string

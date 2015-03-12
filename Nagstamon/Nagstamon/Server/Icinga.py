@@ -117,18 +117,18 @@ class IcingaServer(GenericServer):
                     if self.version < "1.7":
                         # http://www.nagios-wiki.de/nagios/tips/host-_und_serviceproperties_fuer_status.cgi?s=servicestatustypes
                         # services (unknown, warning or critical?) as dictionary, sorted by hard and soft state type
-                        self.cgiurl_services = {"hard": self.monitor_cgi_url + "/status.cgi?host=all&servicestatustypes=253&serviceprops=262144",\
-                                                "soft": self.monitor_cgi_url + "/status.cgi?host=all&servicestatustypes=253&serviceprops=524288"}
+                        self.cgiurl_services = {"hard": self.monitor_cgi_url + "/status.cgi?host=all&servicestatustypes=" + self.get_status_type_service() + "&serviceprops=262144",\
+                                                "soft": self.monitor_cgi_url + "/status.cgi?host=all&servicestatustypes=" + self.get_status_type_service() + "&serviceprops=524288"}
                         # hosts (up or down or unreachable)
-                        self.cgiurl_hosts = {"hard": self.monitor_cgi_url + "/status.cgi?hostgroup=all&style=hostdetail&hoststatustypes=12&hostprops=262144",\
-                                             "soft": self.monitor_cgi_url + "/status.cgi?hostgroup=all&style=hostdetail&hoststatustypes=12&hostprops=524288"}
+                        self.cgiurl_hosts = {"hard": self.monitor_cgi_url + "/status.cgi?hostgroup=all&style=hostdetail&hoststatustypes=" + self.get_status_type_host() + "&hostprops=262144",\
+                                             "soft": self.monitor_cgi_url + "/status.cgi?hostgroup=all&style=hostdetail&hoststatustypes=" + self.get_status_type_host() + "&hostprops=524288"}
                     else:
                         # services (unknown, warning or critical?)
-                        self.cgiurl_services = {"hard": self.monitor_cgi_url + "/status.cgi?style=servicedetail&servicestatustypes=253&serviceprops=262144",\
-                                                "soft": self.monitor_cgi_url + "/status.cgi?style=servicedetail&servicestatustypes=253&serviceprops=524288"}
+                        self.cgiurl_services = {"hard": self.monitor_cgi_url + "/status.cgi?style=servicedetail&servicestatustypes=" + self.get_status_type_service() + "&serviceprops=262144",\
+                                                "soft": self.monitor_cgi_url + "/status.cgi?style=servicedetail&servicestatustypes=" + self.get_status_type_service() + "&serviceprops=524288"}
                         # hosts (up or down or unreachable)
-                        self.cgiurl_hosts = {"hard": self.monitor_cgi_url + "/status.cgi?style=hostdetail&hoststatustypes=12&hostprops=262144",\
-                                             "soft": self.monitor_cgi_url + "/status.cgi?style=hostdetail&hoststatustypes=12&hostprops=524288"}
+                        self.cgiurl_hosts = {"hard": self.monitor_cgi_url + "/status.cgi?style=hostdetail&hoststatustypes=" + self.get_status_type_host() + "&hostprops=262144",\
+                                             "soft": self.monitor_cgi_url + "/status.cgi?style=hostdetail&hoststatustypes=" + self.get_status_type_host() + "&hostprops=524288"}
                     if self.json == True:
                         for status_type in "hard", "soft":
                            self.cgiurl_services[status_type] += "&jsonoutput"

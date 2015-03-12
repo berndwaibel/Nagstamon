@@ -43,12 +43,6 @@ class OpsviewServer(GenericServer):
     # Arguments available for submitting check results
     SUBMIT_CHECK_RESULT_ARGS = ["comment"]
 
-    # URLs for browser shortlinks/buttons on popup window
-    BROWSER_URLS= { "monitor": "$MONITOR$/status/service?filter=unhandled&includeunhandledhosts=1",\
-                    "hosts": "$MONITOR$/status/host?hostgroupid=1&state=1",\
-                    "services": "$MONITOR$/status/service?state=1&state=2&state=3",\
-                    "history": "$MONITOR$/event"}
-
     # autologin is used only by Centreon
     DISABLED_CONTROLS = ["input_checkbutton_use_autologin",
                          "label_autologin_key",
@@ -88,7 +82,11 @@ class OpsviewServer(GenericServer):
         """
         dummy init_config, called at thread start, not really needed here, just omit extra properties
         """
-        pass
+        # URLs for browser shortlinks/buttons on popup window
+        self.browser_urls = { "monitor": "$MONITOR$/status/service?filter=unhandled&includeunhandledhosts=1",\
+                              "hosts": "$MONITOR$/status/host?hostgroupid=1&state=1",\
+                              "services": "$MONITOR$/status/service?state=1&state=2&state=3",\
+                              "history": "$MONITOR$/event"}
 
 
     def get_start_end(self, host):

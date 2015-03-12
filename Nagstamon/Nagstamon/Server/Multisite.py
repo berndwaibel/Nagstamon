@@ -91,12 +91,6 @@ class MultisiteServer(GenericServer):
     """
     TYPE = 'Check_MK Multisite'
 
-    # URLs for browser shortlinks/buttons on popup window
-    BROWSER_URLS= { "monitor": "$MONITOR$",\
-                    "hosts": "$MONITOR$/index.py?start_url=view.py?view_name=hostproblems",\
-                    "services": "$MONITOR$/index.py?start_url=view.py?view_name=svcproblems",\
-                    "history": '$MONITOR$/index.py?start_url=view.py?view_name=events'}
-
     # A Monitor CGI URL is not necessary so hide it in settings
     # autologin is used only by Centreon
     DISABLED_CONTROLS = ["label_monitor_cgi_url",
@@ -186,7 +180,11 @@ class MultisiteServer(GenericServer):
         """
         dummy init_config, called at thread start, not really needed here, just omit extra properties
         """
-        pass
+        # URLs for browser shortlinks/buttons on popup window
+        self.browser_urls = { "monitor": "$MONITOR$",\
+                              "hosts": "$MONITOR$/index.py?start_url=view.py?view_name=hostproblems",\
+                              "services": "$MONITOR$/index.py?start_url=view.py?view_name=svcproblems",\
+                              "history": '$MONITOR$/index.py?start_url=view.py?view_name=events'}
 
 
     def _get_url(self, url):

@@ -95,13 +95,6 @@ class GenericServer(object):
     # Arguments available for submitting check results
     SUBMIT_CHECK_RESULT_ARGS = ["check_output", "performance_data"]
 
-    # URLs for browser shortlinks/buttons on popup window
-    BROWSER_URLS = { "monitor": "$MONITOR$",\
-                    "hosts": "$MONITOR-CGI$/status.cgi?hostgroup=all&style=hostdetail&hoststatustypes=12",\
-                    "services": "$MONITOR-CGI$/status.cgi?host=all&servicestatustypes=253",\
-                    "history": "$MONITOR-CGI$/history.cgi?host=all"}
-
-
     def __init__(self, **kwds):
         # add all keywords to object, every mode searchs inside for its favorite arguments/keywords
         for k in kwds: self.__dict__[k] = kwds[k]
@@ -192,11 +185,16 @@ class GenericServer(object):
         #hostserviceprops = 0
 
         # services (unknown, warning or critical?) as dictionary, sorted by hard and soft state type
-        self.cgiurl_services = {"hard": self.monitor_cgi_url + "/status.cgi?host=all&servicestatustypes=253&serviceprops=262144&limit=0",\
-                                 "soft": self.monitor_cgi_url + "/status.cgi?host=all&servicestatustypes=253&serviceprops=524288&limit=0"}
+        self.cgiurl_services = {"hard": self.monitor_cgi_url + "/status.cgi?host=all&servicestatustypes=" + self.get_status_type_service() + "&serviceprops=262144&limit=0",\
+                                 "soft": self.monitor_cgi_url + "/status.cgi?host=all&servicestatustypes=" + self.get_status_type_service() + "&serviceprops=524288&limit=0"}
         # hosts (up or down or unreachable)
-        self.cgiurl_hosts = { "hard": self.monitor_cgi_url + "/status.cgi?hostgroup=all&style=hostdetail&hoststatustypes=12&hostprops=262144&limit=0",\
-                              "soft": self.monitor_cgi_url + "/status.cgi?hostgroup=all&style=hostdetail&hoststatustypes=12&hostprops=524288&limit=0"}
+        self.cgiurl_hosts = { "hard": self.monitor_cgi_url + "/status.cgi?hostgroup=all&style=hostdetail&hoststatustypes=" + self.get_status_type_host() + "&hostprops=262144&limit=0",\
+                              "soft": self.monitor_cgi_url + "/status.cgi?hostgroup=all&style=hostdetail&hoststatustypes=" + self.get_status_type_host() + "&hostprops=524288&limit=0"}
+        # URLs for browser shortlinks/buttons on popup window
+        self.browser_urls = { "monitor": "$MONITOR$",\
+                              "hosts": "$MONITOR-CGI$/status.cgi?hostgroup=all&style=hostdetail&hoststatustypes=" + self.get_status_type_host(),\
+                              "services": "$MONITOR-CGI$/status.cgi?host=all&servicestatustypes=" + self.get_status_type_service(),\
+                              "history": "$MONITOR-CGI$/history.cgi?host=all"}
 
 
     def init_HTTP(self):
@@ -236,6 +234,36 @@ class GenericServer(object):
         """
         return str(self.password)
 
+    def get_status_type_host(self):
+        """
+        return default status type for HOST
+        """
+        # http://www.nagios-wiki.de/nagios/tips/host-_und_serviceproperties_fuer_status.cgi?s=servicestatustypes
+        HOST_STATUS_HOST_PENDING = 1
+        HOST_STATUS_HOST_UP = 2
+        HOST_STATUS_HOST_DOWN = 4
+        HOST_STATUS_HOST_UNREACHABLE = 8
+        # All hosts: 8 + 4 + 2 + 1 = 15
+        # Host not ok: 8 + 4 = 12 (used till 1.0.1)
+        HOST_STATUS_ALL = HOST_STATUS_HOST_UNREACHABLE + HOST_STATUS_HOST_DOWN + HOST_STATUS_HOST_UP + HOST_STATUS_HOST_PENDING
+        HOST_STATUS_ERR = HOST_STATUS_HOST_UNREACHABLE + HOST_STATUS_HOST_DOWN
+        return str(HOST_STATUS_ERR)
+        
+    def get_status_type_service(self):
+        """
+        return default status type for SERVICE
+        """
+        # http://www.nagios-wiki.de/nagios/tips/host-_und_serviceproperties_fuer_status.cgi?s=servicestatustypes
+        SERVICE_STATUS_SERVICE_PENDING = 1
+        SERVICE_STATUS_SERVICE_OK = 2
+        SERVICE_STATUS_SERVICE_WARNING = 4
+        SERVICE_STATUS_SERVICE_UNKNOWN = 8
+        SERVICE_STATUS_SERVICE_CRITICAL = 16
+        # All services: 16 + 8 + 4 + 2 + 1 = 31
+        # Services not ok: 29 (or 253, which has been used till 1.0.1)
+        SERVICE_STATUS_ALL = SERVICE_STATUS_SERVICE_CRITICAL + SERVICE_STATUS_SERVICE_UNKNOWN + SERVICE_STATUS_SERVICE_WARNING + SERVICE_STATUS_SERVICE_PENDING + SERVICE_STATUS_SERVICE_OK
+        SERVICE_STATUS_ERR = SERVICE_STATUS_SERVICE_CRITICAL + SERVICE_STATUS_SERVICE_UNKNOWN + SERVICE_STATUS_SERVICE_WARNING + SERVICE_STATUS_SERVICE_PENDING
+        return str(SERVICE_STATUS_ERR)
 
     @classmethod
     def get_columns(cls, row):
@@ -479,9 +507,11 @@ class GenericServer(object):
         # first close popwin
         if output <> None:
             output.popwin.Close()
-
+        
+        # if filter has been changed, we may need a changed url, so reread config
+        self.init_config()
         # run thread with action
-        action = Actions.Action(string=self.BROWSER_URLS[url_type],\
+        action = Actions.Action(string=self.browser_urls[url_type],\
                         type="browser",\
                         conf=self.conf,\
                         server=self)
@@ -769,6 +799,8 @@ class GenericServer(object):
             self.isChecking = False
             return Result()
 
+        # if filter has been changed, we may need a changed url, so reread config
+        self.init_config()
         # get all trouble hosts/services from server specific _get_status()
         status = self._get_status()
         self.status, self.status_description = status.result, status.error
