@@ -1,3 +1,10 @@
+nagstamon (1.0.2) stable; urgency=low
+
+  * New upstream
+   - fixed: if selected display for fullscreen mode is not present, switch back to display number 0
+
+ -- Bernd Waibel <bwaibel@intarsys.de>
+
 nagstamon (1.0.1) stable; urgency=low
 
   * New upstream
