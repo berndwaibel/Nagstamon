@@ -1152,6 +1152,36 @@
                   </packing>
                 </child>
                 <child>
+                  <object class="GtkCheckButton" id="input_checkbutton_filter_all_up_hosts">
+                    <property name="label" translatable="yes">All up hosts</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="xalign">0</property>
+                    <property name="draw_indicator">True</property>
+                  </object>
+                  <packing>
+                    <property name="top_attach">8</property>
+                    <property name="bottom_attach">9</property>
+                    <property name="y_options">GTK_FILL</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkCheckButton" id="input_checkbutton_filter_all_up_services">
+                    <property name="label" translatable="yes">All up services</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="xalign">0</property>
+                    <property name="draw_indicator">True</property>
+                  </object>
+                  <packing>
+                    <property name="top_attach">9</property>
+                    <property name="bottom_attach">10</property>
+                    <property name="y_options">GTK_FILL</property>
+                  </packing>
+                </child>
+                <child>
                   <object class="GtkCheckButton" id="input_checkbutton_re_host_enabled">
                     <property name="label" translatable="yes">Regular expression for hosts</property>
                     <property name="visible">True</property>

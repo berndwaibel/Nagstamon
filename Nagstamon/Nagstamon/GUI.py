@@ -364,6 +364,7 @@ class GUI(object):
         unknowns = 0
         criticals = 0
         warnings = 0
+        ups = 0
         # display "ERROR" in case of startup connection trouble
         errors = ""
 
@@ -400,6 +401,7 @@ class GUI(object):
                     unknowns += server.unknowns
                     criticals += server.criticals
                     warnings += server.warnings
+                    ups += server.ups
 
                     # if there is no trouble...
                     if len(server.nagitems_filtered["hosts"]["DOWN"]) == 0 and \
@@ -653,6 +655,10 @@ class GUI(object):
                 if str(self.conf.long_display) == "True": warnings = str(warnings) + " WARNING"
                 self.statusbar.statusbar_labeltext += '<span size="%s" background="%s" foreground="%s"> %s </span>' % (str(self.fontsize), str(self.conf.color_warning_background), str(self.conf.color_warning_text), str(warnings))
                 self.statusbar.statusbar_labeltext_inverted += '<span size="%s" background="%s" foreground="%s"> %s </span>' % (str(self.fontsize), str(self.conf.color_warning_text), str(self.conf.color_warning_background), str(warnings))
+            if ups > 0 and not (self.conf.filter_all_up_services and self.conf.filter_all_up_hosts):
+                if str(self.conf.long_display) == "True": ups = str(ups) + " OK"
+                self.statusbar.statusbar_labeltext += '<span size="%s" background="%s" foreground="%s"> %s </span>' % (str(self.fontsize), str(self.conf.color_ok_background), str(self.conf.color_ok_text), str(ups))
+                self.statusbar.statusbar_labeltext_inverted += '<span size="%s" background="%s" foreground="%s"> %s </span>' % (str(self.fontsize), str(self.conf.color_ok_text), str(self.conf.color_ok_background), str(ups))
 
             # if connections fails at starting do not display OK - Debian bug #617490
             if unknowns == 0 and warnings == 0 and criticals == 0 and unreachables == 0 and downs == 0 and self.status_ok is False:
