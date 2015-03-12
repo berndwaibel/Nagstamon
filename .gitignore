@@ -1,2 +1,10 @@
 *.pyc
 *~
+.project
+.pydevproject
+.settings
+/build/dist/
+/build/build/
+/build/Output/
+/build/nagstamon.iss/
+/patches/
