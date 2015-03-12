@@ -1,34 +1,22 @@
 Nagstamon
 =========
 
-**Major development at the moment only happens in the 'qt' branch.**
+This is a fork of the original Nagstamon.
 
-Nagstamon is a Nagios status monitor for the desktop. It connects to multiple Nagios, Icinga, Opsview, Centreon, Op5 Monitor/Ninja, Check_MK Multisite and Thruk monitoring servers and resides in systray or as a floating statusbar at the desktop showing a brief summary of critical, warning, unknown, unreachable and down hosts and services and pops up a detailed status overview when moving the mouse pointer over it. Connecting to displayed hosts and services is easily established by context menu via SSH, RDP and VNC or any self defined actions. Users can be notified by sound. Hosts and services can be filtered by category and regular expressions.
-
-It is inspired by Nagios Checker for Firefox - just without an open Firefox window all the time to monitor the network.
-
-Nagstamon is released under the GPLv2 and free to use and modify.
-
-Nagstamon is written in Python so it is highly portable. It has been tested successfully on Ubuntu 8.04 - 14.04, Debian 6.0 - 7.0, Fedora 8 - 20, OpenSUSE 11.x, Windows 2000 + XP + XP 64bit + Vista + Windows 7 + 8 + 2008 + 2012, OpenSolaris 2009.06, NetBSD, OpenBSD, FreeBSD and MacOS X.
-It works with GNOME, KDE, Windows and MacOS X desktop.
-
-Successfully tested monitor versions include:
-
-- Nagios 1.x, 2.x and 3.x
-- Icinga 1.2+
-- Opsview 3.5+
-- Centreon 2.1.x
-- Op5 Monitor 6.3+
-- Check_MK/Multisite 1.1.10+ and 
-- Thruk 1.5.0+.
-
-Experimental:
-- Zabbix 2.2+ support is included since Nagstamon 1.0.
+The only official release is here: https://github.com/HenriWahl/Nagstamon
 
 
-See https://nagstamon.ifw-dresden.de for further information.
+This personal fork has just one reason: implement things I personally need:
+- Issue #128: Feature request: Monitor hosts in OK state to perform actions
+- Issue #129: Configured display may not be available
 
-To build this release from source, you need:
+Warning:
+This fork is only tested with Nagios and a limited number of hosts (49 hosts, 164 services).
+- It may or may not work with other monitoring systems.
+- It may or may not work with larger environments.
+If you do test this fork, using other monitoring systems or larger environments, please let me know.
+
+To build this release from source, you need something like:
 - Python    Version 2: e.g. python-2.7.9.msi
 - PyGtk     Version 2: e.g. pygtk-all-in-one-2.24.2.win32-py2.7.msi
 - InnoSetup Version 5: e.g. InnoSetup_isetup-5.5.5.exe
