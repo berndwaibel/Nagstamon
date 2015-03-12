@@ -2165,6 +2165,9 @@ class Popwin(object):
                 self.Window.set_visible(False)
                 self.Window.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_NORMAL)
                 self.Window.set_visible(True)
+                # the configured display may not be available
+                if not self.output.conf.fullscreen_display in self.output.monitors:
+                    self.output.conf.fullscreen_display = 0
                 x0, y0, width, height = self.output.monitors[int(self.output.conf.fullscreen_display)]
                 self.Window.move(x0, y0)
                 self.Window.set_decorated(True)
