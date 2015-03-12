@@ -14,14 +14,21 @@ It works with GNOME, KDE, Windows and MacOS X desktop.
 
 Successfully tested monitor versions include:
 
-Nagios 1.x, 2.x and 3.x, Icinga 1.2+, Opsview 3.5+, Centreon 2.1.x, Op5 Monitor 6.3+, Check_MK/Multisite 1.1.10+ and Thruk 1.5.0+.
+- Nagios 1.x, 2.x and 3.x
+- Icinga 1.2+
+- Opsview 3.5+
+- Centreon 2.1.x
+- Op5 Monitor 6.3+
+- Check_MK/Multisite 1.1.10+ and 
+- Thruk 1.5.0+.
 
-Experimental Zabbix 2.2+ support is included since Nagstamon 1.0.
+Experimental:
+- Zabbix 2.2+ support is included since Nagstamon 1.0.
 
 
 See https://nagstamon.ifw-dresden.de for further information.
 
 To build this release from source, you need:
-Python    Version 2: e.g. python-2.7.9.msi
-PyGtk     Version 2: e.g. pygtk-all-in-one-2.24.2.win32-py2.7.msi
-InnoSetup Version 5: e.g. InnoSetup_isetup-5.5.5.exe
+- Python    Version 2: e.g. python-2.7.9.msi
+- PyGtk     Version 2: e.g. pygtk-all-in-one-2.24.2.win32-py2.7.msi
+- InnoSetup Version 5: e.g. InnoSetup_isetup-5.5.5.exe
