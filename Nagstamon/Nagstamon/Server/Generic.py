@@ -123,6 +123,7 @@ class GenericServer(object):
         self.unknowns = 0
         self.criticals = 0
         self.warnings = 0
+        self.ups = 0
         self.status = ""
         self.status_description = ""
         # needed for looping server thread
@@ -247,7 +248,10 @@ class GenericServer(object):
         # Host not ok: 8 + 4 = 12 (used till 1.0.1)
         HOST_STATUS_ALL = HOST_STATUS_HOST_UNREACHABLE + HOST_STATUS_HOST_DOWN + HOST_STATUS_HOST_UP + HOST_STATUS_HOST_PENDING
         HOST_STATUS_ERR = HOST_STATUS_HOST_UNREACHABLE + HOST_STATUS_HOST_DOWN
-        return str(HOST_STATUS_ERR)
+        if (self.conf.filter_all_up_hosts):
+            return str(HOST_STATUS_ERR)
+        else:
+            return str(HOST_STATUS_ALL)
         
     def get_status_type_service(self):
         """
@@ -263,7 +267,10 @@ class GenericServer(object):
         # Services not ok: 29 (or 253, which has been used till 1.0.1)
         SERVICE_STATUS_ALL = SERVICE_STATUS_SERVICE_CRITICAL + SERVICE_STATUS_SERVICE_UNKNOWN + SERVICE_STATUS_SERVICE_WARNING + SERVICE_STATUS_SERVICE_PENDING + SERVICE_STATUS_SERVICE_OK
         SERVICE_STATUS_ERR = SERVICE_STATUS_SERVICE_CRITICAL + SERVICE_STATUS_SERVICE_UNKNOWN + SERVICE_STATUS_SERVICE_WARNING + SERVICE_STATUS_SERVICE_PENDING
-        return str(SERVICE_STATUS_ERR)
+        if (self.conf.filter_all_up_services):
+            return str(SERVICE_STATUS_ERR)
+        else:
+            return str(SERVICE_STATUS_ALL)
 
     @classmethod
     def get_columns(cls, row):
@@ -837,7 +844,7 @@ class GenericServer(object):
         self.refresh_authentication = False
 
         # this part has been before in GUI.RefreshDisplay() - wrong place, here it needs to be reset
-        self.nagitems_filtered = {"services":{"CRITICAL":[], "WARNING":[], "UNKNOWN":[]}, "hosts":{"DOWN":[], "UNREACHABLE":[]}}
+        self.nagitems_filtered = {"services":{"UP":[], "CRITICAL":[], "WARNING":[], "UNKNOWN":[]}, "hosts":{"UP":[], "DOWN":[], "UNREACHABLE":[]}}
 
         # initialize counts for various service/hosts states
         # count them with every miserable host/service respective to their meaning
@@ -846,6 +853,7 @@ class GenericServer(object):
         self.unknowns = 0
         self.criticals = 0
         self.warnings = 0
+        self.ups = 0
 
         for host in self.new_hosts.values():
             # Don't enter the loop if we don't have a problem. Jump down to your problem services
@@ -919,6 +927,16 @@ class GenericServer(object):
                     if host.visible:
                         self.nagitems_filtered["hosts"]["UNREACHABLE"].append(host)
                         self.unreachables += 1
+            else:
+                # status == "UP"
+                if str(self.conf.filter_all_up_hosts) == "True":
+                    if str(self.conf.debug_mode) == "True":
+                        self.Debug(server=self.get_name(), debug="Filter: UP " + str(host.name))
+                    host.visible = False
+
+                if host.visible:
+                    self.nagitems_filtered["hosts"]["UP"].append(host)
+                    self.ups += 1
 
             for service in host.services.values():
                 # Some generic filtering
@@ -1030,6 +1048,15 @@ class GenericServer(object):
                         else:
                             self.nagitems_filtered["services"]["UNKNOWN"].append(service)
                             self.unknowns += 1
+
+                    if service.status == "OK":
+                        if str(self.conf.filter_all_up_services) == "True":
+                            if str(self.conf.debug_mode) == "True":
+                                self.Debug(server=self.get_name(), debug="Filter: UP " + str(host.name) + ";" + str(service.name))
+                            service.visible = False
+                        else:
+                            self.nagitems_filtered["services"]["UP"].append(service)
+                            self.ups += 1
 
     # find out if there has been some status change to notify user
         # compare sorted lists of filtered nagios items

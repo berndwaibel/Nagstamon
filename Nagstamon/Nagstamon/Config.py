@@ -43,6 +43,10 @@ class Config(object):
         self.highlight_new_events = True
         self.default_sort_field = "Status"
         self.default_sort_order = "Descending"
+        # default true to not get all hosts
+        self.filter_all_up_hosts = True
+        # default true to not get all services
+        self.filter_all_up_services = True
         self.filter_all_down_hosts = False
         self.filter_all_unreachable_hosts = False
         self.filter_all_flapping_hosts = False

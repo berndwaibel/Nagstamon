@@ -2,6 +2,14 @@ nagstamon (1.0.2) stable; urgency=low
 
   * New upstream
    - fixed: if selected display for fullscreen mode is not present, switch back to display number 0
+   - added filter to show all hosts which are up and a filter to show all services which are ok. If selected:
+     . You could see all hosts or services which are "ok", and can select actions on them.
+     . The status bar will contain a green "OK" field, with the number of hosts and services.
+     . The web browser will open with all hosts or services, not only the "wrong" ones.
+     . The default is "filtered", so the old behaviour will consist.
+     . Only tested for nagios, code for the others is changed, but maybe the "up" hosts and "ok" services may not been shown.
+     . Fixed by Bernd Waibel <bwaibel@intarsys.de> Sun, 14 February 2015 20:00 +0200
+     . For bug fixes you may mail to Bernd Waibel.
 
  -- Bernd Waibel <bwaibel@intarsys.de>
 
